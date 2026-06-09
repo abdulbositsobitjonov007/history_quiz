@@ -1,0 +1,1133 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>История Узбекистана — Викторина</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Lato:wght@300;400;700&display=swap"
+        rel="stylesheet">
+    <style>
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0
+        }
+
+        :root {
+            --navy: #0e2141;
+            --lapis: #1d4e9b;
+            --gold: #bf8a36;
+            --gold-lt: #e0b96a;
+            --stone: #f2ede0;
+            --stone-dk: #e4dcc8;
+            --teal: #1e6b78;
+            --text: #1a1f30;
+            --muted: #607090;
+            --ok: #1a6640;
+            --ok-bg: #eaf5ee;
+            --ok-border: #a8d5bc;
+            --no: #8c1c2e;
+            --no-bg: #fceaec;
+            --no-border: #e8aab5;
+            --white: #ffffff;
+            --r: 14px;
+            --sh: 0 4px 20px rgba(14, 33, 65, .13);
+            --sh-lg: 0 8px 48px rgba(14, 33, 65, .22);
+        }
+
+        html {
+            scroll-behavior: smooth
+        }
+
+        body {
+            font-family: 'Lato', sans-serif;
+            background: var(--stone);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 0 16px 80px
+        }
+
+        /* ── TILED BACKGROUND ── */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+            opacity: .035;
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='%230e2141' stroke-width='.8'%3E%3Cpolygon points='30,4 38,14 50,14 50,26 38,36 38,45 30,55 22,45 22,36 10,26 10,14 22,14'/%3E%3Cpolygon points='30,12 36,19 44,19 44,27 36,33 36,40 30,47 24,40 24,33 16,27 16,19 24,19'/%3E%3C/g%3E%3C/svg%3E");
+        }
+
+        .wrap {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 700px
+        }
+
+        /* ── HEADER ── */
+        .hdr {
+            text-align: center;
+            padding: 36px 0 28px
+        }
+
+        .hdr-eye {
+            font-family: 'Lato', sans-serif;
+            font-size: 10px;
+            letter-spacing: .25em;
+            text-transform: uppercase;
+            color: var(--gold);
+            font-weight: 700;
+            margin-bottom: 12px
+        }
+
+        .hdr h1 {
+            font-family: 'Cinzel', serif;
+            font-size: clamp(26px, 5vw, 42px);
+            font-weight: 900;
+            color: var(--navy);
+            line-height: 1.1;
+            letter-spacing: .02em
+        }
+
+        .hdr-sub {
+            margin-top: 8px;
+            font-size: 14px;
+            color: var(--muted);
+            font-weight: 300
+        }
+
+        .hr-ornament {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 14px;
+            margin: 14px 0 0
+        }
+
+        .hr-line {
+            height: 1px;
+            width: 64px;
+            background: linear-gradient(90deg, transparent, var(--gold))
+        }
+
+        .hr-line.r {
+            background: linear-gradient(90deg, var(--gold), transparent)
+        }
+
+        .hr-gem {
+            font-size: 16px;
+            color: var(--gold)
+        }
+
+        /* ── PROGRESS BAR ── */
+        .prog-row {
+            background: var(--white);
+            border-radius: var(--r);
+            padding: 14px 20px;
+            margin-bottom: 18px;
+            box-shadow: var(--sh);
+            display: flex;
+            align-items: center;
+            gap: 14px
+        }
+
+        .prog-label {
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--muted);
+            white-space: nowrap;
+            min-width: 42px
+        }
+
+        .prog-track {
+            flex: 1;
+            height: 7px;
+            background: var(--stone-dk);
+            border-radius: 100px;
+            overflow: hidden
+        }
+
+        .prog-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--lapis), var(--teal));
+            border-radius: 100px;
+            transition: width .45s cubic-bezier(.4, 0, .2, 1)
+        }
+
+        .prog-score {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--navy);
+            white-space: nowrap
+        }
+
+        /* ── QUESTION CARD ── */
+        .card {
+            background: var(--white);
+            border-radius: var(--r);
+            box-shadow: var(--sh-lg);
+            overflow: hidden
+        }
+
+        .card.anim {
+            animation: slideUp .38s cubic-bezier(.34, 1.1, .64, 1)
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(22px) scale(.975)
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1)
+            }
+        }
+
+        /* card header – mosaic tile SVG as bg pattern */
+        .card-top {
+            background: linear-gradient(140deg, var(--navy) 0%, #163473 55%, var(--lapis) 100%);
+            padding: 28px 28px 22px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card-top::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            opacity: .06;
+            background-image: url("data:image/svg+xml,%3Csvg width='44' height='44' viewBox='0 0 44 44' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='%23ffffff' stroke-width='1'%3E%3Cpolygon points='22,3 28,10 36,10 36,18 28,24 28,30 22,37 16,30 16,24 8,18 8,10 16,10'/%3E%3C/g%3E%3C/svg%3E");
+        }
+
+        .card-top::after {
+            content: '';
+            position: absolute;
+            top: -40px;
+            right: -40px;
+            width: 140px;
+            height: 140px;
+            background: rgba(255, 255, 255, .04);
+            border-radius: 50%
+        }
+
+        .q-num {
+            font-size: 10px;
+            letter-spacing: .2em;
+            text-transform: uppercase;
+            color: var(--gold-lt);
+            font-weight: 700;
+            margin-bottom: 10px;
+            position: relative
+        }
+
+        .q-text {
+            font-family: 'Cinzel', serif;
+            font-size: clamp(15px, 2.6vw, 19px);
+            color: var(--white);
+            line-height: 1.5;
+            font-weight: 700;
+            position: relative
+        }
+
+        /* hint */
+        .hint-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-top: 15px;
+            position: relative;
+            background: rgba(255, 255, 255, .09);
+            border: 1px solid rgba(255, 255, 255, .18);
+            color: rgba(255, 255, 255, .72);
+            font-size: 12px;
+            font-family: 'Lato', sans-serif;
+            padding: 6px 14px;
+            border-radius: 100px;
+            cursor: pointer;
+            transition: background .2s, color .2s
+        }
+
+        .hint-btn:hover {
+            background: rgba(255, 255, 255, .18);
+            color: white
+        }
+
+        .hint-body {
+            display: none;
+            margin-top: 11px;
+            position: relative;
+            padding: 10px 14px;
+            background: rgba(191, 138, 54, .18);
+            border-left: 3px solid var(--gold-lt);
+            border-radius: 4px;
+            font-size: 13px;
+            color: rgba(255, 255, 255, .85);
+            line-height: 1.55
+        }
+
+        .hint-body.on {
+            display: block;
+            animation: fadeIn .25s ease
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0
+            }
+
+            to {
+                opacity: 1
+            }
+        }
+
+        /* answers */
+        .answers {
+            padding: 20px 22px 18px;
+            display: flex;
+            flex-direction: column;
+            gap: 9px
+        }
+
+        .opt {
+            display: flex;
+            align-items: flex-start;
+            gap: 11px;
+            padding: 13px 15px;
+            border: 2px solid var(--stone-dk);
+            border-radius: 11px;
+            background: var(--stone);
+            cursor: pointer;
+            text-align: left;
+            font-family: 'Lato', sans-serif;
+            font-size: 14px;
+            line-height: 1.45;
+            color: var(--text);
+            transition: border-color .15s, background .15s, transform .12s
+        }
+
+        .opt:hover:not(:disabled) {
+            border-color: var(--lapis);
+            background: #eef3fc;
+            transform: translateX(4px)
+        }
+
+        .opt:disabled {
+            cursor: default
+        }
+
+        .opt.correct {
+            border-color: var(--ok);
+            background: var(--ok-bg);
+            color: var(--ok);
+            font-weight: 700
+        }
+
+        .opt.wrong {
+            border-color: var(--no);
+            background: var(--no-bg);
+            color: var(--no)
+        }
+
+        .opt.dim {
+            opacity: .38
+        }
+
+        .opt-letter {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            width: 26px;
+            height: 26px;
+            border-radius: 7px;
+            background: var(--stone-dk);
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--muted);
+            transition: background .15s, color .15s
+        }
+
+        .opt.correct .opt-letter {
+            background: var(--ok);
+            color: white
+        }
+
+        .opt.wrong .opt-letter {
+            background: var(--no);
+            color: white
+        }
+
+        /* feedback */
+        .fb {
+            display: none;
+            margin: 0 22px 16px;
+            padding: 13px 15px;
+            border-radius: 11px;
+            font-size: 14px;
+            line-height: 1.5;
+            animation: fadeIn .28s ease
+        }
+
+        .fb.ok {
+            display: block;
+            background: var(--ok-bg);
+            border: 1px solid var(--ok-border);
+            color: var(--ok)
+        }
+
+        .fb.no {
+            display: block;
+            background: var(--no-bg);
+            border: 1px solid var(--no-border);
+            color: var(--no)
+        }
+
+        .fb strong {
+            display: block;
+            font-size: 14px;
+            margin-bottom: 3px
+        }
+
+        /* next button */
+        .next-row {
+            padding: 0 22px 22px;
+            display: none
+        }
+
+        .next-row.on {
+            display: block
+        }
+
+        .btn-next {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, var(--navy), var(--lapis));
+            color: white;
+            border: none;
+            border-radius: 11px;
+            font-family: 'Lato', sans-serif;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            letter-spacing: .03em;
+            transition: opacity .18s, transform .1s
+        }
+
+        .btn-next:hover {
+            opacity: .9;
+            transform: translateY(-1px)
+        }
+
+        .btn-next:active {
+            transform: translateY(0)
+        }
+
+        /* ── WELCOME ── */
+        #welcome {
+            padding: 10px 0
+        }
+
+        .wcard {
+            background: var(--white);
+            border-radius: 16px;
+            box-shadow: var(--sh-lg);
+            padding: 38px 30px;
+            text-align: center
+        }
+
+        .wbadge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(135deg, var(--navy), var(--lapis));
+            color: white;
+            padding: 8px 22px;
+            border-radius: 100px;
+            font-size: 12px;
+            font-weight: 700;
+            margin-bottom: 22px;
+            letter-spacing: .04em
+        }
+
+        .wdesc {
+            font-size: 15px;
+            color: var(--muted);
+            line-height: 1.65;
+            max-width: 420px;
+            margin: 0 auto 26px;
+            font-weight: 300
+        }
+
+        .wstats {
+            display: flex;
+            gap: 14px;
+            justify-content: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap
+        }
+
+        .ws {
+            flex: 1;
+            min-width: 90px;
+            padding: 16px 12px;
+            background: var(--stone);
+            border-radius: 11px;
+            text-align: center
+        }
+
+        .ws-n {
+            font-family: 'Cinzel', serif;
+            font-size: 30px;
+            font-weight: 900;
+            color: var(--navy);
+            line-height: 1
+        }
+
+        .ws-l {
+            font-size: 11px;
+            color: var(--muted);
+            margin-top: 4px;
+            text-transform: uppercase;
+            letter-spacing: .08em
+        }
+
+        .btn-start {
+            display: inline-block;
+            padding: 15px 42px;
+            background: linear-gradient(135deg, var(--gold) 0%, #d4a74a 100%);
+            color: var(--navy);
+            border: none;
+            border-radius: 11px;
+            font-family: 'Lato', sans-serif;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 4px 22px rgba(191, 138, 54, .38);
+            transition: transform .15s, box-shadow .15s;
+            letter-spacing: .03em
+        }
+
+        .btn-start:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 30px rgba(191, 138, 54, .5)
+        }
+
+        /* ── RESULTS ── */
+        #results {
+            display: none;
+            padding: 10px 0
+        }
+
+        .rcard {
+            background: var(--white);
+            border-radius: 16px;
+            box-shadow: var(--sh-lg);
+            overflow: hidden
+        }
+
+        .rtop {
+            background: linear-gradient(140deg, var(--navy), var(--lapis));
+            padding: 38px 28px;
+            text-align: center;
+            color: white
+        }
+
+        .rcircle {
+            width: 116px;
+            height: 116px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, .1);
+            border: 3px solid var(--gold-lt);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px
+        }
+
+        .rcircle-n {
+            font-family: 'Cinzel', serif;
+            font-size: 40px;
+            font-weight: 900;
+            color: var(--gold-lt);
+            line-height: 1
+        }
+
+        .rcircle-of {
+            font-size: 13px;
+            color: rgba(255, 255, 255, .65)
+        }
+
+        .r-title {
+            font-family: 'Cinzel', serif;
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 8px
+        }
+
+        .r-msg {
+            font-size: 14px;
+            color: rgba(255, 255, 255, .78);
+            font-weight: 300
+        }
+
+        .rbody {
+            padding: 28px
+        }
+
+        .r-stars {
+            font-size: 30px;
+            letter-spacing: 5px;
+            margin-bottom: 22px
+        }
+
+        .r-break {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            margin-bottom: 26px;
+            flex-wrap: wrap
+        }
+
+        .rb {
+            flex: 1;
+            min-width: 100px;
+            padding: 14px;
+            border-radius: 11px;
+            text-align: center
+        }
+
+        .rb.c {
+            background: var(--ok-bg)
+        }
+
+        .rb.w {
+            background: var(--no-bg)
+        }
+
+        .rb-n {
+            font-family: 'Cinzel', serif;
+            font-size: 26px;
+            font-weight: 700
+        }
+
+        .rb.c .rb-n {
+            color: var(--ok)
+        }
+
+        .rb.w .rb-n {
+            color: var(--no)
+        }
+
+        .rb-l {
+            font-size: 11px;
+            color: var(--muted);
+            margin-top: 3px;
+            text-transform: uppercase;
+            letter-spacing: .07em
+        }
+
+        .btn-again {
+            display: inline-block;
+            padding: 13px 34px;
+            background: linear-gradient(135deg, var(--navy), var(--lapis));
+            color: white;
+            border: none;
+            border-radius: 11px;
+            font-family: 'Lato', sans-serif;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: opacity .18s
+        }
+
+        .btn-again:hover {
+            opacity: .88
+        }
+
+        #quiz {
+            display: none
+        }
+
+        @media(max-width:480px) {
+            .card-top {
+                padding: 22px 18px 18px
+            }
+
+            .answers {
+                padding: 16px 14px 14px;
+                gap: 7px
+            }
+
+            .opt {
+                padding: 11px 13px;
+                font-size: 13px
+            }
+
+            .fb {
+                margin: 0 14px 12px
+            }
+
+            .next-row {
+                padding: 0 14px 16px
+            }
+
+            .prog-row {
+                padding: 12px 14px;
+                gap: 10px
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="wrap">
+
+        <!-- HEADER -->
+        <header class="hdr">
+            <div class="hdr-eye">Образовательная викторина</div>
+            <h1>История Узбекистана</h1>
+            <p class="hdr-sub">От древних государств до советского времени</p>
+            <div class="hr-ornament">
+                <div class="hr-line"></div>
+                <div class="hr-gem">✦</div>
+                <div class="hr-line r"></div>
+            </div>
+        </header>
+
+        <!-- WELCOME -->
+        <div id="welcome">
+            <div class="wcard">
+                <div class="wbadge">⚡ 35 вопросов</div>
+                <p class="wdesc">Проверьте знания по истории Узбекистана — от Бактрии и Согда до Туркестанской
+                    автономии. Варианты перемешаны, подсказка скрыта — думайте сами!</p>
+                <div class="wstats">
+                    <div class="ws">
+                        <div class="ws-n">35</div>
+                        <div class="ws-l">Вопросов</div>
+                    </div>
+                    <div class="ws">
+                        <div class="ws-n">4</div>
+                        <div class="ws-l">Варианта</div>
+                    </div>
+                    <div class="ws">
+                        <div class="ws-n">∞</div>
+                        <div class="ws-l">Попыток</div>
+                    </div>
+                </div>
+                <button class="btn-start" onclick="startQuiz()">Начать викторину →</button>
+            </div>
+        </div>
+
+        <!-- QUIZ -->
+        <div id="quiz">
+            <div class="prog-row">
+                <span class="prog-label" id="prog-lbl">1 / 35</span>
+                <div class="prog-track">
+                    <div class="prog-fill" id="prog-fill" style="width:0%"></div>
+                </div>
+                <span class="prog-score" id="prog-score">✓ 0</span>
+            </div>
+            <div class="card" id="qcard">
+                <div class="card-top">
+                    <div class="q-num" id="qnum">ВОПРОС 1</div>
+                    <div class="q-text" id="qtext"></div>
+                    <button class="hint-btn" id="hbtn" onclick="toggleHint()">💡 Подсказка</button>
+                    <div class="hint-body" id="hbody"></div>
+                </div>
+                <div class="answers" id="answers"></div>
+                <div class="fb" id="fb"></div>
+                <div class="next-row" id="nrow">
+                    <button class="btn-next" id="bnext" onclick="nextQ()">Следующий вопрос →</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- RESULTS -->
+        <div id="results">
+            <div class="rcard">
+                <div class="rtop">
+                    <div class="rcircle">
+                        <div class="rcircle-n" id="r-num">0</div>
+                        <div class="rcircle-of">из 35</div>
+                    </div>
+                    <div class="r-title" id="r-title">Отлично!</div>
+                    <div class="r-msg" id="r-msg"></div>
+                </div>
+                <div class="rbody" style="text-align:center">
+                    <div class="r-stars" id="r-stars">⭐⭐⭐</div>
+                    <div class="r-break">
+                        <div class="rb c">
+                            <div class="rb-n" id="rb-ok">0</div>
+                            <div class="rb-l">Правильно</div>
+                        </div>
+                        <div class="rb w">
+                            <div class="rb-n" id="rb-no">0</div>
+                            <div class="rb-l">Ошибок</div>
+                        </div>
+                    </div>
+                    <button class="btn-again" onclick="restart()">🔄 Пройти ещё раз</button>
+                </div>
+            </div>
+        </div>
+
+    </div><!-- .wrap -->
+
+    <script>
+        const RAW = [
+            {
+                q: "Что в переводе с греческого языка означает слово «история»?",
+                a: ["Повествование о том, что узнано и исследовано", "Наука о прошлых событиях и правителях", "Свод законов и летописей древности", "Хронология и описание войн"],
+                hint: "Вспомните значение, связанное с процессом активного познания и исследования мира.",
+                expl: "Слово «история» по-гречески означает именно повествование о познанном и исследованном — процесс активного изучения мира."
+            },
+            {
+                q: "На какие три основных принципа следует опираться при изучении исторического развития Узбекистана в годы независимости?",
+                a: ["Научность и объективность, историзм, социальный подход", "Субъективизм, догматизм, теологический подход", "Периодизация, экономизм, географический детерминизм", "Этноцентризм, политизация, сословный подход"],
+                hint: "Один из принципов требует беспристрастности, другой — рассмотрения явлений во временном развитии.",
+                expl: "Три ключевых принципа: научность и объективность (беспристрастность), историзм (рассмотрение во времени) и социальный подход."
+            },
+            {
+                q: "Какое произведение Первого Президента Республики Узбекистан И. А. Каримова названо в тексте важнейшим историческим источником?",
+                a: ["«Без исторической памяти нет будущего»", "«Узбекистан на пороге XXI века»", "«Высокая духовность — непобедимая сила»", "«Узбекистан: свой путь обновления и прогресса»"],
+                hint: "Название этого произведения связывает воедино память о прошлом и перспективу развития.",
+                expl: "Книга «Без исторической памяти нет будущего» напрямую связывает историческую память и перспективы развития страны."
+            },
+            {
+                q: "К какому типу классификации относится разделение средневековых источников на публично-правовые акты, делопроизводственные документы и частные письма?",
+                a: ["Видовая классификация", "Классификация по методам и формам отражения действительности", "Лингвистическая классификация", "Этнографическая классификация"],
+                hint: "Обратите внимание на классификацию, которая базируется на функциях и влиянии документа на общество.",
+                expl: "Деление на публично-правовые акты, делопроизводственные документы и частные письма — это видовая классификация исторических источников."
+            },
+            {
+                q: "В какой хронологический период происходило формирование историко-культурных областей Бактрии, Согда и Хорезма?",
+                a: ["От начала I тысячелетия до н. э. по 539 г. до н. э.", "С конца IV в. до н. э. по II в. до н. э.", "В середине X века нашей эры", "С I в. н. э. по IV в. н. э."],
+                hint: "Конечная дата совпадает с падением Вавилона и усилением персов в 539 г. до н. э.",
+                expl: "Историко-культурные области Бактрии, Согда и Хорезма формировались с начала I тыс. до н. э. вплоть до 539 г. до н. э. — падения Вавилона."
+            },
+            {
+                q: "Как согласно «Авесте» называлась третья ступень иерархической структуры общества (племя)?",
+                a: ["Занту", "Нмана", "Вис", "Дахью"],
+                hint: "Цепочка от меньшего к большему: нмана (семья) — вис (род) — … — дахью (страна).",
+                expl: "Третья ступень по «Авесте»: нмана (семья) → вис (род) → занту (племя) → дахью (страна)."
+            },
+            {
+                q: "Что прервало развитие традиций местной государственности в Средней Азии в VI в. до н. э.?",
+                a: ["Завоевание территории державой Ахеменидов", "Нашествие кочевых племён юечжей", "Вторжение войск Александра Македонского", "Арабские грабительские набеги"],
+                hint: "Событие связано с экспансией могущественной персидской империи, против которой боролась Томирис.",
+                expl: "В VI в. до н. э. Ахеменидская держава завоевала Среднюю Азию, прервав традиции местной государственности."
+            },
+            {
+                q: "Какой лидер возглавил восстание против Ахеменидов в Маргиане?",
+                a: ["Фрада", "Спитамен", "Муканна", "Рафи ибн Лейс"],
+                hint: "Это имя упоминается в списке борцов против персов наряду с Томирис и Шираком.",
+                expl: "Фрада возглавил восстание против персидских Ахеменидов в Маргиане, войдя в историю как один из первых борцов за свободу региона."
+            },
+            {
+                q: "Каковы точные хронологические рамки завоевания Средней Азии Александром Македонским и падения эллинского господства?",
+                a: ["С конца IV в. до н. э. до начала второй половины II в. до н. э.", "С начала I тысячелетия до н. э. по 539 г. до н. э.", "С I в. н. э. по III в. н. э.", "С 551 г. по 744 г. н. э."],
+                hint: "Период начинается с походов Александра (329–327 гг. до н. э.) и завершается приходом кочевников.",
+                expl: "Эллинское господство охватывало конец IV в. до н. э. — начало второй половины II в. до н. э., от походов Александра до вытеснения греков кочевниками."
+            },
+            {
+                q: "Под давлением какого народа кочевые племена юечжей-тохаров были вынуждены двинуться в Бактрию, что привело к падению Греко-Бактрийского царства?",
+                a: ["Хунны", "Арабы", "Монголы", "Хиониты"],
+                hint: "Вспомните самый воинственный кочевой народ древней Центральной Азии.",
+                expl: "Именно хунны своей экспансией вытеснили юечжей-тохаров в Бактрию, что повлекло крушение Греко-Бактрийского царства."
+            },
+            {
+                q: "В каком районе Средней Азии располагались основные племена, входившие в состав государственного объединения Кангюй?",
+                a: ["По среднему и нижнему течению Сырдарьи", "В высокогорьях Памира и Гиндукуша", "В дельте Амударьи у побережья Каспия", "Исключительно в Ферганской долине (Давань)"],
+                hint: "Ищите реку, вдоль которой формировалось это объединение.",
+                expl: "Кангюй сложился вдоль среднего и нижнего течения Сырдарьи — главной водной артерии, объединявшей племена."
+            },
+            {
+                q: "При каком правителе Кушанское царство достигло пика своего наивысшего могущества?",
+                a: ["Канишка I", "Куджула Кадфиз I", "Ильбарсхан", "Чингиз-хан"],
+                hint: "Этот выдающийся царь правил на рубеже I–II веков нашей эры.",
+                expl: "Канишка I (рубеж I–II вв.) — при нём Кушанское царство достигло наибольшего территориального и культурного расцвета."
+            },
+            {
+                q: "Какое племя первым завоевало земли кушан в IV веке нашей эры?",
+                a: ["Хиониты", "Ягма", "Карлуки", "Арабы"],
+                hint: "Название этого племени начинается на букву «Х».",
+                expl: "В IV веке именно хиониты первыми вторглись на земли Кушанского царства, положив начало его распаду."
+            },
+            {
+                q: "Какой регион стал ядром государства эфталитов на рубеже V–VI веков?",
+                a: ["Бактрия (Тохаристан)", "Хорезмский оазис", "Бухарское владение", "Семиречье"],
+                hint: "Эта область ранее была колыбелью Греко-Бактрии и Кушанского царства.",
+                expl: "Бактрия (Тохаристан) традиционно служила центром мощных государств региона — так и государство эфталитов выросло из этого ядра."
+            },
+            {
+                q: "В каком году арабы взяли Мерв, открыв путь для последующих набегов на Мавераннахр?",
+                a: ["В 651 году", "В 551 году", "В 776 году", "В 806 году"],
+                hint: "Событие середины VII века, ознаменовавшее появление арабов на пороге региона.",
+                expl: "В 651 году арабы захватили Мерв — важнейший опорный пункт, открывший им дорогу в Мавераннахр."
+            },
+            {
+                q: "Какой земельный налог платили арабам местные жители, принявшие ислам?",
+                a: ["Ушр", "Харадж", "Джизья", "Продразвёрстка"],
+                hint: "Название этого налога переводится как «десятина» — он равнялся 1/10 части урожая.",
+                expl: "Ушр — «десятина», одна десятая часть урожая, которую платили мусульмане; харадж и джизья взимались с немусульман."
+            },
+            {
+                q: "Какую религиозно-социальную идеологию проповедовал Хашим ибн Хаким (Муканна) во время восстания 776 года?",
+                a: ["Маздакизм", "Эллинизм", "Ортодоксальный ислам", "Буддизм"],
+                hint: "Эта доктрина проповедовала абсолютное равенство и раздел имущества между людьми.",
+                expl: "Муканна опирался на маздакизм — учение о социальном равенстве и общности имущества, что привлекало угнетённых крестьян."
+            },
+            {
+                q: "Как называлась категория государственных земель в Саманидском государстве, доходы с которых шли в казну?",
+                a: ["Мулки султоний", "Вакуфные земли", "Частный мулк", "Суюргал"],
+                hint: "Ищите термин, содержащий корень, указывающий на султана или верховного правителя.",
+                expl: "«Мулки султоний» — государственные земли саманидских правителей, доходы с которых поступали напрямую в казну."
+            },
+            {
+                q: "Союз каких тюркских племён лёг в основу создания государства Караханидов в середине X века?",
+                a: ["Ягма, чигили и карлуки", "Юечжи, тохары и хунны", "Хиониты, кидариты и эфталиты", "Барласы, джалаиры и найманы"],
+                hint: "Основатель государства Сатук Бограхан был выходцем из первого племени — ягма.",
+                expl: "Государство Караханидов создали ягма, чигили и карлуки; Сатук Бограхан из ягма объединил эти племена и принял ислам."
+            },
+            {
+                q: "Какой город стал столицей Западного Караханидского государства после раскола единой державы в 1041 году?",
+                a: ["Бухара", "Баласагун", "Газна", "Отрар"],
+                hint: "Этот древний город традиционно считался культурным и духовным центром региона.",
+                expl: "После раскола 1041 года Бухара с её богатой культурной историей стала столицей Западного Каракасидского государства."
+            },
+            {
+                q: "К какому государству изначально относилась провинция Газна, где в X веке правил Себук тегин — отец основателя династии Газневидов?",
+                a: ["Государство Саманидов", "Тюркский каганат", "Ахеменидская держава", "Хорезмшахский султанат"],
+                hint: "Вспомните династию, к которой принадлежал Исмаил Самани.",
+                expl: "Себук тегин был наместником Газны при саманидском дворе — именно из этой провинции выросла независимая держава Газневидов."
+            },
+            {
+                q: "Какие регионы и государства завоевал Чингиз-хан в период с 1207 по 1211 годы, прежде чем напасть на Хорезм?",
+                a: ["Верховье Енисея, северную часть Семиречья, государство уйгуров", "Бухарский эмират и Хивинское ханство", "Индию, Афганистан и Иран", "Туркестанское генерал-губернаторство"],
+                hint: "Эти территории находились к северу от Монголии и включали земли уйгуров.",
+                expl: "Перед ударом по Хорезму Чингиз-хан покорил верховья Енисея, северную часть Семиречья и государство уйгуров — обезопасив фланги."
+            },
+            {
+                q: "Кто из средневековых деятелей прославился отчаянной борьбой против монгольского нашествия?",
+                a: ["Темур Малик, Махмуд Тараби, Джалалетдин Мангуберди", "Спитамен, Ширак, Томирис", "Бумынь, Истеми, Канишка", "Исмаил Самани, Сатук Бограхан, Себук тегин"],
+                hint: "В списке — правитель Ходжента, лидер восстания в Бухаре и последний хорезмшах.",
+                expl: "Темур Малик оборонял Ходжент, Махмуд Тараби поднял восстание в Бухаре, Джалалетдин Мангуберди — последний хорезмшах, сражавшийся до конца."
+            },
+            {
+                q: "К какому племени (роду) принадлежал отец Амира Темура — Тарагай?",
+                a: ["Барласы", "Ягма", "Юечжи", "Младохивинцы"],
+                hint: "Название этого знатного рода начинается на букву «Б».",
+                expl: "Тарагай принадлежал к тюрко-монгольскому роду барласов — одному из знатных родов Мавераннахра."
+            },
+            {
+                q: "Под каким лозунгом проходило народное движение сарбадаров, начавшееся в 1337 году?",
+                a: ["«Лучше видеть свои головы на виселице, чем умирать от страха»", "«Все материальные блага должны делиться поровну»", "«Без исторической памяти нет будущего»", "«Новый метод во всём — от школы до управления»"],
+                hint: "Само слово «сарбадар» переводится как «висельник».",
+                expl: "«Сарбадары» — «висельники»: их девизом было предпочесть смерть на виселице трусливому страху. Это был вызов монгольскому гнёту."
+            },
+            {
+                q: "В каком месте и году состоялся курултай, на котором Амир Темур был официально провозглашён единственным правителем Мовароуннахра?",
+                a: ["В апреле 1370 года в Балхе", "В сентябре 1219 года в Отраре", "В июне 1365 года под Ташкентом", "В феврале 1925 года в Бухаре"],
+                hint: "Событие произошло весной, через 5 лет после знаменитой «Битвы в грязи».",
+                expl: "В апреле 1370 года в Балхе курултай провозгласил Амира Темура единственным правителем Мавераннахра — через пять лет после «Битвы в грязи» (1365)."
+            },
+            {
+                q: "Какое значение имела победа Амира Темура над султаном Баязидом в 1402 году под Анкарой для Европы?",
+                a: ["Спасла страны Западной Европы от разорительного вторжения турков-османов", "Позволила завершить масштабный поход на Китай", "Привела к официальному признанию протектората России", "Ликвидировала систему условного землевладения (суюргал)"],
+                hint: "Разгром армии Баязида на десятилетия отсрочил продвижение османов вглубь Европы.",
+                expl: "Победа под Анкарой разгромила армию Баязида и на несколько десятилетий задержала османское наступление на Европу."
+            },
+            {
+                q: "К какому негативному результату привела широкая раздача земель в суюргал при Амире Темуре после его смерти?",
+                a: ["Содействовала накоплению сепаратистских сил, разрушивших целостность государства", "Вызвала массовое крестьянское восстание под знаменем газавата", "Полностью уничтожила класс крупных землевладельцев — дехкан", "Привела к немедленному захвату Самарканда войсками Красной армии"],
+                hint: "Условные владения родственников со временем превращались в независимые уделы.",
+                expl: "Суюргал давал держателям всё больше власти; после смерти Темура родственники-уделодержатели превратились в независимых правителей, разрушив единство державы."
+            },
+            {
+                q: "В какой период Бухарское ханство достигло своего наивысшего расцвета, когда им правил Абдулла-хан II?",
+                a: ["1557–1598 гг.", "1533–1539 гг.", "1753–1758 гг.", "1709–1721 гг."],
+                hint: "Это вторая половина XVI века, завершающая эпоху правления Шайбанидов.",
+                expl: "Правление Абдулла-хана II (1557–1598) — вершина могущества Бухарского ханства при Шайбанидах."
+            },
+            {
+                q: "Какое укрепление было построено русскими войсками в 1847 году в устье Сырдарьи, положив начало колониальному захвату края?",
+                a: ["Раимское (Аральское) укрепление", "Форт Перовского", "Зеравшанский округ", "Ферганская область"],
+                hint: "Название укрепления созвучно названию местности у самого Аральского моря.",
+                expl: "Раимское (Аральское) укрепление, возведённое в 1847 году в устье Сырдарьи, стало первым российским форпостом на пути в глубь Средней Азии."
+            },
+            {
+                q: "Кто был назначен первым генерал-губернатором созданного в июле 1867 года Туркестанского генерал-губернаторства?",
+                a: ["К. П. фон Кауфман", "М. Г. Черняев", "М. Д. Скобелев", "Исмаил Гаспринский"],
+                hint: "Его фамилия немецкого происхождения, он руководил походами на Хиву и Коканд.",
+                expl: "Константин Петрович фон Кауфман (с немецкими корнями) стал первым и наиболее влиятельным генерал-губернатором Туркестана."
+            },
+            {
+                q: "В каком году Кокандское ханство было полностью упразднено Российской империей, превратившись в Ферганскую область?",
+                a: ["1876 год", "1864 год", "1873 год", "1916 год"],
+                hint: "Событие произошло через три года после установления протектората над Бухарой и Хивой.",
+                expl: "В 1876 году, через три года после признания Бухары и Хивы протекторатами, Россия окончательно ликвидировала Кокандское ханство."
+            },
+            {
+                q: "Какое политическое событие произошло в Коканде на IV Чрезвычайном краевом съезде мусульман 26 ноября 1917 года?",
+                a: ["Было объявлено о создании «Туркистон мухторияти» (Туркестанской автономии)", "Произошло полное падение и бегство бухарского эмира", "Была принята «Декларация об образовании Узбекской ССР»", "Введена всеобщая продразвёрстка"],
+                hint: "Это была первая попытка интеллигенции провозгласить суверенную автономию демократического типа.",
+                expl: "«Туркистон мухторияти» — первая попытка образования демократической мусульманской автономии, провозглашённая в Коканде в ноябре 1917 года."
+            },
+            {
+                q: "В чём заключалась экономическая суть политики «военного коммунизма», введённой советской властью в начале 1918 года?",
+                a: ["Концентрация промышленности в руках государства, продразвёрстка и запрет частной торговли", "Переход к новой экономической политике (НЭП) и свобода рынка", "Широкое распределение земель в суюргал и снижение налогов", "Введение серебряного динара и замена натурального налога денежной рентой"],
+                hint: "Государство жёстко изымало все излишки хлеба и продукции у крестьян.",
+                expl: "«Военный коммунизм»: национализация производства, принудительная продразвёрстка (изъятие «излишков»), запрет свободной торговли."
+            },
+            {
+                q: "Какое общественно-политическое движение было инициировано советской властью весной 1927 года для ускорения раскрепощения женщин-мусульманок?",
+                a: ["«Худжум»", "«Усул-и-джадид»", "Движение сарбадаров", "«Холерный бунт»"],
+                hint: "Название этого движения переводится с узбекского языка как «наступление» или «атака».",
+                expl: "«Худжум» («наступление») — кампания 1927 года за снятие паранджи и вовлечение женщин-мусульманок в общественную жизнь."
+            },
+        ];
+
+        // ── Shuffle helper ──
+        function shuffle(arr) {
+            const a = [...arr];
+            for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1));[a[i], a[j]] = [a[j], a[i]]; }
+            return a;
+        }
+
+        // ── Build shuffled question list ──
+        const QUESTIONS = RAW.map(r => {
+            const indices = shuffle([0, 1, 2, 3]);
+            const opts = indices.map(i => r.a[i]);
+            const correct = indices.indexOf(0); // original index 0 = correct answer
+            return { q: r.q, opts, correct, hint: r.hint, expl: r.expl };
+        });
+
+        let cur = 0, score = 0, answered = false;
+        const LETTERS = ['А', 'Б', 'В', 'Г'];
+
+        function startQuiz() {
+            document.getElementById('welcome').style.display = 'none';
+            document.getElementById('quiz').style.display = 'block';
+            render();
+        }
+
+        function render() {
+            const q = QUESTIONS[cur];
+            answered = false;
+
+            document.getElementById('qnum').textContent = 'ВОПРОС ' + (cur + 1);
+            document.getElementById('qtext').textContent = q.q;
+            document.getElementById('prog-lbl').textContent = (cur + 1) + ' / ' + QUESTIONS.length;
+            document.getElementById('prog-fill').style.width = (cur / QUESTIONS.length * 100) + '%';
+            document.getElementById('prog-score').textContent = '✓ ' + score;
+            document.getElementById('hbody').textContent = q.hint;
+            document.getElementById('hbody').classList.remove('on');
+            document.getElementById('hbtn').textContent = '💡 Подсказка';
+            document.getElementById('fb').className = 'fb';
+            document.getElementById('fb').innerHTML = '';
+            document.getElementById('nrow').classList.remove('on');
+            document.getElementById('bnext').textContent = cur === QUESTIONS.length - 1 ? 'Завершить викторину ✓' : 'Следующий вопрос →';
+
+            const el = document.getElementById('answers');
+            el.innerHTML = '';
+            q.opts.forEach((opt, i) => {
+                const b = document.createElement('button');
+                b.className = 'opt';
+                b.innerHTML = '<span class="opt-letter">' + LETTERS[i] + '</span><span>' + opt + '</span>';
+                b.onclick = () => pick(i);
+                el.appendChild(b);
+            });
+
+            // Re-trigger animation
+            const card = document.getElementById('qcard');
+            card.classList.remove('anim');
+            void card.offsetWidth;
+            card.classList.add('anim');
+        }
+
+        function toggleHint() {
+            const b = document.getElementById('hbody');
+            const btn = document.getElementById('hbtn');
+            b.classList.toggle('on');
+            btn.textContent = b.classList.contains('on') ? '💡 Скрыть' : '💡 Подсказка';
+        }
+
+        function pick(idx) {
+            if (answered) return;
+            answered = true;
+            const q = QUESTIONS[cur];
+            const ok = idx === q.correct;
+            if (ok) score++;
+
+            const btns = document.querySelectorAll('.opt');
+            btns.forEach((b, i) => {
+                b.disabled = true;
+                if (i === q.correct) b.classList.add('correct');
+                else if (i === idx && !ok) b.classList.add('wrong');
+                else b.classList.add('dim');
+            });
+
+            const fb = document.getElementById('fb');
+            fb.innerHTML = ok
+                ? '<strong>✓ Правильно!</strong>' + q.expl
+                : '<strong>✗ Неверно.</strong>' + q.expl;
+            fb.className = 'fb ' + (ok ? 'ok' : 'no');
+            document.getElementById('nrow').classList.add('on');
+            document.getElementById('prog-score').textContent = '✓ ' + score;
+        }
+
+        function nextQ() {
+            if (cur < QUESTIONS.length - 1) { cur++; render(); window.scrollTo({ top: 0, behavior: 'smooth' }); }
+            else showResults();
+        }
+
+        function showResults() {
+            document.getElementById('quiz').style.display = 'none';
+            const rs = document.getElementById('results');
+            rs.style.display = 'block';
+            const pct = score / QUESTIONS.length;
+            document.getElementById('r-num').textContent = score;
+            document.getElementById('rb-ok').textContent = score;
+            document.getElementById('rb-no').textContent = QUESTIONS.length - score;
+            let title, msg, stars;
+            if (pct >= .9) { title = 'Превосходно!'; msg = 'Вы блестяще знаете историю Узбекистана!'; stars = '⭐⭐⭐⭐⭐'; }
+            else if (pct >= .75) { title = 'Отличный результат!'; msg = 'Крепкое знание истории — продолжайте!'; stars = '⭐⭐⭐⭐'; }
+            else if (pct >= .6) { title = 'Хороший результат'; msg = 'Неплохо, но есть пробелы — повторите материал.'; stars = '⭐⭐⭐'; }
+            else if (pct >= .4) { title = 'Нужно больше практики'; msg = 'Рекомендуем вернуться к конспектам и попробовать снова.'; stars = '⭐⭐'; }
+            else { title = 'Продолжайте учиться'; msg = 'История Узбекистана богата — не сдавайтесь!'; stars = '⭐'; }
+            document.getElementById('r-title').textContent = title;
+            document.getElementById('r-msg').textContent = msg;
+            document.getElementById('r-stars').textContent = stars;
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function restart() {
+            cur = 0; score = 0; answered = false;
+            // Re-shuffle all questions
+            QUESTIONS.forEach((item, i) => {
+                const r = RAW[i];
+                const indices = shuffle([0, 1, 2, 3]);
+                item.opts = indices.map(k => r.a[k]);
+                item.correct = indices.indexOf(0);
+            });
+            document.getElementById('results').style.display = 'none';
+            document.getElementById('quiz').style.display = 'block';
+            render();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    </script>
+</body>
+
+</html>
